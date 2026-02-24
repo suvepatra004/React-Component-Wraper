@@ -88,6 +88,10 @@ const UserData = () => {
 
                         <p style={{ margin: "2px 0", color: "#555", fontSize: "14px" }}>
                             <strong>City:</strong> {user.address?.city}
+                            {/* user.address?.city  --> Optional Chaining
+                                user ?? "Not Known" --> Nullish Coalescing operator 
+                                (t is used to provide a default value when the left-hand side operand is null or undefined)
+                            */}
                         </p>
 
                         <p style={{ margin: "2px 0", color: "#555", fontSize: "14px" }}>

@@ -2,6 +2,7 @@ import TODO from './TODO'
 import './App.css'
 import DynamicTodo from './DynamicTodo'
 import UserData from './UserData'
+import Recipies from './Recipies'
 
 function App() {
 
@@ -10,7 +11,8 @@ function App() {
       <div>
         {/* <TODO /> */}
         {/* <DynamicTodo /> */}
-        <UserData />
+        {/* <UserData /> */}
+        <Recipies />
       </div>
     </>
   )
