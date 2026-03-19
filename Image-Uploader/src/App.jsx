@@ -2,6 +2,8 @@
  * TODO:
  *
  * - [] Implement image uploading functionality.
+ * - [] Implement image description functionality.
+ * - [] Implement image preview functionality.
  *
  * FIXME:
  *
@@ -9,35 +11,21 @@
  */
 import { useState } from "react";
 import "./App.css";
+import ImageUploaderForm from "./ImageUploaderForm";
 
 function App() {
-  const greeting = "Hello, Prop Drilling!";
-  const response = "I'm not here to play!";
-
-  return <Parent greeting={greeting} response={response} />;
-}
-
-const Parent = ({ greeting, response }) => {
-  return <Child greeting={greeting} response={response} />;
-};
-
-const Child = ({ greeting, response }) => {
-  return <Grandchild greeting={greeting} response={response} />;
-};
-
-const Grandchild = ({ greeting, response }) => {
-  const [count, setCount] = useState(0);
-
   return (
     <>
-      <h1>{greeting}</h1>
-      <h2>{response}</h2>
-
-      <button onClick={() => setCount(count + 1)}>Increase Count</button>
-      <h2>Count: {count}</h2>
-      <button onClick={() => setCount(count - 1)}>Decrease Count</button>
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+        <div className="bg-white p-4 rounded-lg shadow-lg">
+          {/* <span>
+            Please select an image to upload. You can also add a description for
+          </span> */}
+          <ImageUploaderForm />
+        </div>
+      </div>
     </>
   );
-};
+}
 
 export default App;
