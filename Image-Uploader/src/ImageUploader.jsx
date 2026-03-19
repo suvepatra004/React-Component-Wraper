@@ -45,7 +45,7 @@ function ImageUploader({ onUpload }) {
           onChange={(e) => setImage(e.target.files[0])}
         />
         <button
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 cursor-pointer"
           type="submit"
         >
           Upload Image

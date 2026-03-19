@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ImagePreview from "./ImagePreview";
 import ImageUploader from "./ImageUploader";
 
@@ -8,6 +8,10 @@ function ImageUploaderForm() {
   function handleUpload(uploadData) {
     setData(uploadData);
   }
+
+  const handleReset = () => {
+    setData(null);
+  };
 
   return (
     <>
@@ -19,7 +23,7 @@ function ImageUploaderForm() {
       {!data ? (
         <ImageUploader onUpload={handleUpload} />
       ) : (
-        <ImagePreview data={data} />
+        <ImagePreview data={data} onReset={handleReset} />
       )}
     </>
   );
