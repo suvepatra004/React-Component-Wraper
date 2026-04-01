@@ -116,3 +116,13 @@ app.get("/api/stats", async (req, res) => {
 app.listen(5000 || process.env.PORT, () => {
   console.log(`Server is running at PORT ${process.env.PORT}`);
 });
+
+/**
+ * TODO:
+ *
+ * [x] Adding routes and routes handlers (Patients, Doctors, Appointments)
+ * [x] Validate Patient routes (Postman) get/post/put/delete
+ * [x] Validate Doctors routes (Postman) get/post/put/delete
+ * [] Validate Appointments routes (Postman) get/post/put/delete
+ * [] Add Error Handlers to routes (Patients, Doctors, Appointments)
+ */
