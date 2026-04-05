@@ -14,10 +14,14 @@ createRoot(document.getElementById("root")).render(
  *
  * TODO:
  *
- * [] Add api.js file - That will handle all http request methods
- * [] Add index.css file
- * [] Add Dashboard.jsx file
- * [] Add Patients.jsx file
- * [] Add Doctors.jsx file
- * [] Add Appointments.jsx file
+ * [x] Add api.js file - That will handle all http request methods
+ * [x] Add index.css file
+ * [x] Add Dashboard.jsx file
+ * [x] Add Patients.jsx file
+ * [x] Add Doctors.jsx file
+ * [x] Add Appointments.jsx file
+ *
+ * FIXME:
+ * [] Fixing the Mongodb IP connection
+ * [] Fix Frontend running PORT
  */
