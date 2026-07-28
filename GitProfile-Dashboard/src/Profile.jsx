@@ -4,6 +4,8 @@ function Profile() {
   const [user, setUser] = useState({});
   const [findUser, setFindUser] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   //   useEffect(() => {
   //     fetch(`https://api.github.com/users/${findUser}`)
   //       .then((res) => res.json())
@@ -11,18 +13,37 @@ function Profile() {
   //         setUser(data);
   //       });
   //   }, [findUser]);
+
   const fetchUser = () => {
-    fetch(`https://api.github.com/users/${findUser}`)
+    const userName = findUser.trim();
+    if (!userName) {
+      setError("Set username");
+      setUser({});
+    }
+
+    setLoading(true);
+
+    fetch(`https://api.github.com/users/${userName}`)
       .then((res) => res.json())
       .then((data) => {
-        if (!data) {
-          return `<h2>User data unavailable</h2>`;
-        }
         if (data.message === "Not Found") {
-          return `<h2>User data not found</h2>`;
+          setError("User not found");
+          setUser({});
+          return;
         }
         setUser(data);
-      });
+        setLoading(false);
+      })
+      .catch(() => {
+        setError("Something went wrong");
+        setUser({});
+      })
+      .finally(() => setLoading(false));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    fetchUser();
   };
 
   return (
@@ -30,7 +51,7 @@ function Profile() {
       <div className="container w-full max-w-2xl bg-gray-800 rounded-2xl p-4">
         <form
           className="w-full max-w-2xl mx-auto flex gap-2"
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={handleSubmit}
         >
           <input
             type="search"
@@ -42,11 +63,11 @@ function Profile() {
           />
 
           <button
+            disabled={loading}
             type="submit"
             className="rounded-md bg-[#1f1f28] border border-white px-2 py-1 text-white cursor-pointer"
-            onClick={fetchUser}
           >
-            Search
+            {loading ? "Searching..." : "Search"}
           </button>
         </form>
         <div className="git-user-profile m-2 p-2">
@@ -88,6 +109,17 @@ function Profile() {
             </tbody>
           </table>
         </div>
+        {error && <p className="text-red-500">{error}</p>}
+        {user.html_url && (
+          <a
+            href={user.html_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-sm border  px-4 py-1 text-white bg-[#1f1f28] cursor-pointer"
+          >
+            Visit Profile
+          </a>
+        )}
       </div>
     </>
   );
