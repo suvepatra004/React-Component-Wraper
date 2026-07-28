@@ -1,16 +1,11 @@
-import { useState } from "react";
+import Profile from "./Profile";
 function App() {
   return (
     <div className="flex items-center justify-center flex-col">
-      Git Profile Viewer
-      <button
-        onClick={() => {
-          console.log("Showing Profile");
-        }}
-        className="bg-indigo-500 text-white text-xl font-bold cursor-pointer p-4 rounded"
-      >
-        Show Profile
-      </button>
+      <header>
+        <h1 className="font-extrabold text-3xl m-4">GitHub Profile</h1>
+      </header>
+      <Profile />
     </div>
   );
 }
