@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from "react";
 
+/**
+ *
+ * TODO:
+ * [] User Not Found error fix (error displaying after correct user fetch)
+ * [] More Error handling (API authorization, api call limits)
+ * [] Search bar visible Only, when typing the username.
+ *
+ * ADD:
+ * 1. Is username empty check (search bar) (previous fetched user profile is present or not)
+ * 2. Is user found after fetch request (No, Hide profile then Show "User not found")
+ * 3. Is user found after fetch request (Yes, Clear previous error then Show user Profile + Show Profile)
+ */
+
 function Profile() {
   const [user, setUser] = useState({});
   const [findUser, setFindUser] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  //   useEffect(() => {
-  //     fetch(`https://api.github.com/users/${findUser}`)
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         setUser(data);
-  //       });
-  //   }, [findUser]);
-
   const fetchUser = () => {
     const userName = findUser.trim();
     if (!userName) {
       setError("Set username");
-      setUser({});
+      return;
     }
 
     setLoading(true);
@@ -26,16 +31,11 @@ function Profile() {
     fetch(`https://api.github.com/users/${userName}`)
       .then((res) => res.json())
       .then((data) => {
-        if (data.message === "Not Found") {
-          setError("User not found");
-          setUser({});
-          return;
-        }
         setUser(data);
         setLoading(false);
       })
-      .catch(() => {
-        setError("Something went wrong");
+      .catch((e) => {
+        setError(e);
         setUser({});
       })
       .finally(() => setLoading(false));
@@ -53,14 +53,16 @@ function Profile() {
           className="w-full max-w-2xl mx-auto flex gap-2"
           onSubmit={handleSubmit}
         >
-          <input
-            type="search"
-            name="searchUser"
-            value={findUser}
-            onChange={(e) => setFindUser(e.target.value)}
-            placeholder="Search GitHub user..."
-            className="flex-1 rounded-md bg-amber-50 px-4 py-1 text-gray-800 outline-none"
-          />
+          {
+            <input
+              type="search"
+              name="searchUser"
+              value={findUser}
+              onChange={(e) => setFindUser(e.target.value)}
+              placeholder="Search GitHub user..."
+              className="flex-1 rounded-md bg-amber-50 px-4 py-1 text-gray-800 outline-none"
+            />
+          }
 
           <button
             disabled={loading}
@@ -70,56 +72,55 @@ function Profile() {
             {loading ? "Searching..." : "Search"}
           </button>
         </form>
-        <div className="git-user-profile m-2 p-2">
-          {user.avatar_url && (
-            <img
-              src={user.avatar_url}
-              alt="avatar image"
-              className="size-30 rounded-md"
-            />
-          )}
-          <table className="w-full table-fixed border-separate border-spacing-y-2 text-left">
-            <tbody>
-              <tr id="username">
-                <td className="w-32 font-medium">User Name</td>
-                <td>{user.login}</td>
-              </tr>
-              <tr id="name">
-                <td className="font-medium">Name</td>
-                <td>{user.name}</td>
-              </tr>
-              {/* <tr>
-                <td className="font-medium">Email</td>
-                <td>
-                  <p>{user.email}</p>
-                </td>
-              </tr> */}
-              <tr id="company">
-                <td className="font-medium">Company</td>
-                <td>{user.company}</td>
-              </tr>
-              <tr id="followers">
-                <td className="font-medium">Followers</td>
-                <td>{user.followers}</td>
-              </tr>
-              <tr id="bio">
-                <td className="font-medium align-top">Bio</td>
-                <td>{user.bio}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        {error && <p className="text-red-500">{error}</p>}
-        {user.html_url && (
-          <a
-            href={user.html_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-sm border  px-4 py-1 text-white bg-[#1f1f28] cursor-pointer"
-          >
-            Visit Profile
-          </a>
+        {!loading && (
+          <div className="git-user-profile m-2 p-2">
+            {user.avatar_url && (
+              <img
+                src={user.avatar_url}
+                alt="avatar image"
+                className="size-30 rounded-md"
+              />
+            )}
+            <table className="w-full table-fixed border-separate border-spacing-y-2 text-left">
+              <tbody>
+                <tr id="username">
+                  <td className="w-32 font-medium">User Name</td>
+                  <td>{user.login}</td>
+                </tr>
+                <tr id="name">
+                  <td className="font-medium">Name</td>
+                  <td>{user.name === null ? <p>N/A</p> : user.name}</td>
+                </tr>
+
+                <tr id="company">
+                  <td className="font-medium">Company</td>
+                  <td>{user.company === null ? <p>N/A</p> : user.company}</td>
+                </tr>
+                <tr id="followers">
+                  <td className="font-medium">Followers</td>
+                  <td>
+                    {user.followers === null ? <p>N/A</p> : user.followers}
+                  </td>
+                </tr>
+                <tr id="bio">
+                  <td className="font-medium align-top">Bio</td>
+                  <td>{user.bio === null ? <p>N/A</p> : user.bio}</td>
+                </tr>
+              </tbody>
+            </table>
+            {user.html_url && (
+              <a
+                href={user.html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-sm border  px-4 py-1 text-white bg-[#1f1f28] cursor-pointer"
+              >
+                Visit Profile
+              </a>
+            )}
+          </div>
         )}
+        {error && <p className="text-red-500">{error}</p>}
       </div>
     </>
   );
