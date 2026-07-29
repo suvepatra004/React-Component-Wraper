@@ -98,7 +98,7 @@ The core functionality of the application has been implemented.
 - ✅ "User Not Found" handling
 - ✅ Visit Profile redirect
 
-### 📌 Planned Improvements (Version 3)
+### Version 3 
 
 - [ ] Search history
 - [ ] Click previous searches to search again
