@@ -31,6 +31,10 @@ function Profile() {
     fetch(`https://api.github.com/users/${userName}`)
       .then((res) => res.json())
       .then((data) => {
+        setError("");
+        if (data.status === "404") {
+          setError("User not found");
+        }
         setUser(data);
         setLoading(false);
       })
