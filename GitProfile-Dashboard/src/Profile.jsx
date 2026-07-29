@@ -3,14 +3,18 @@ import React, { useEffect, useState } from "react";
 /**
  *
  * TODO:
- * [] User Not Found error fix (error displaying after correct user fetch)
+ * @V2
+ * [Done] User Not Found error fix (error displaying after correct user fetch)
+ * [Done] Search bar visible Only, when typing the username.
+ *
+ * @V3
  * [] More Error handling (API authorization, api call limits)
- * [] Search bar visible Only, when typing the username.
+ * [] use of Axios/react-query/react-swr
  *
  * ADD:
- * 1. Is username empty check (search bar) (previous fetched user profile is present or not)
- * 2. Is user found after fetch request (No, Hide profile then Show "User not found")
- * 3. Is user found after fetch request (Yes, Clear previous error then Show user Profile + Show Profile)
+ * [Done] Is username empty check (search bar) (previous fetched user profile is present or not)
+ * [Done] Is user found after fetch request (No, Hide profile then Show "User not found")
+ * [Done] Is user found after fetch request (Yes, Clear previous error + user profile then Show user Profile)
  */
 
 function Profile() {
@@ -22,24 +26,32 @@ function Profile() {
   const fetchUser = () => {
     const userName = findUser.trim();
     if (!userName) {
+      setUser({});
       setError("Set username");
       return;
     }
 
+    setError("");
     setLoading(true);
 
     fetch(`https://api.github.com/users/${userName}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setError("");
-        if (data.status === "404") {
-          setError("User not found");
+      .then(async (res) => {
+        if (res.status === 404) {
+          setError("User Not Found");
+          setUser({});
+          return null;
         }
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (!data) return;
         setUser(data);
-        setLoading(false);
       })
       .catch((e) => {
-        setError(e);
+        setError(e.message || String(e));
         setUser({});
       })
       .finally(() => setLoading(false));
@@ -57,16 +69,14 @@ function Profile() {
           className="w-full max-w-2xl mx-auto flex gap-2"
           onSubmit={handleSubmit}
         >
-          {
-            <input
-              type="search"
-              name="searchUser"
-              value={findUser}
-              onChange={(e) => setFindUser(e.target.value)}
-              placeholder="Search GitHub user..."
-              className="flex-1 rounded-md bg-amber-50 px-4 py-1 text-gray-800 outline-none"
-            />
-          }
+          <input
+            type="search"
+            name="searchUser"
+            value={findUser}
+            onChange={(e) => setFindUser(e.target.value)}
+            placeholder="Search GitHub user..."
+            className="flex-1 rounded-md bg-amber-50 px-4 py-1 text-gray-800 outline-none"
+          />
 
           <button
             disabled={loading}
@@ -76,7 +86,7 @@ function Profile() {
             {loading ? "Searching..." : "Search"}
           </button>
         </form>
-        {!loading && (
+        {!loading && user.id && (
           <div className="git-user-profile m-2 p-2">
             {user.avatar_url && (
               <img
