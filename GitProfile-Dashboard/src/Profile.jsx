@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import historyIcon from "../assets/recently.png";
 
 /**
  *
@@ -9,8 +10,8 @@ import React, { useEffect, useState } from "react";
  *
  * @V3
  * [] More Error handling (API authorization, api call limits)
- * [] use of Axios/react-query/react-swr instead of Fetch API call
- * [] Add recent 5 search history (storing in LocalStorage)
+ * [Done] use of Axios/react-query/react-swr instead of Fetch API call
+ * [Done] Add recent 5 search history (storing in LocalStorage)
  *
  * ADD:
  * [Done] Is username empty check (search bar) (previous fetched user profile is present or not)
@@ -23,9 +24,51 @@ function Profile() {
   const [findUser, setFindUser] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [recentUser, setRecentUser] = useState([]);
 
-  const fetchUser = async () => {
-    const userName = findUser.trim();
+  const addRecentUser = (username) => {
+    const gitUser = username.trim();
+    // Eliminate Duplicates
+    const filteredHistory = recentUser.filter((user) => user !== gitUser);
+    // Add fitered users
+    const updatedHistory = [gitUser, ...filteredHistory].slice(0, 5);
+
+    // Store to the localstorage
+    setRecentUser(updatedHistory);
+    localStorage.setItem(
+      "history",
+      JSON.stringify({
+        users: updatedHistory,
+        timestamp: Date.now(),
+      }),
+    );
+  };
+
+  useEffect(() => {
+    const storedHistory = localStorage.getItem("history");
+
+    if (!storedHistory) return;
+
+    try {
+      const { users, timestamp } = JSON.parse(storedHistory);
+
+      const FIVE_MINUTES = 5 * 60 * 1000;
+
+      if (Date.now() - timestamp > FIVE_MINUTES) {
+        localStorage.removeItem("history");
+        setRecentUser([]);
+        return;
+      }
+
+      setRecentUser(users);
+    } catch (err) {
+      localStorage.removeItem("history");
+      setRecentUser([]);
+    }
+  }, []);
+
+  const fetchUser = async (uname = findUser) => {
+    const userName = uname.trim();
     if (!userName) {
       setUser({});
       setError("Set username");
@@ -50,6 +93,7 @@ function Profile() {
       const data = await res.json();
       if (!data) return;
       setUser(data);
+      addRecentUser(userName);
     } catch (e) {
       setError(e.message || String(e));
       setUser({});
@@ -65,118 +109,131 @@ function Profile() {
 
   return (
     <>
-      <div className="container w-full max-w-2xl bg-gray-800 rounded-2xl p-4">
+      <div className="mx-auto w-full max-w-2xl rounded-2xl bg-gray-800 p-4">
         <form
-          className="w-full max-w-2xl mx-auto flex gap-2"
+          className="flex w-full flex-col gap-2 sm:flex-row"
           onSubmit={handleSubmit}
         >
           <input
             type="search"
             name="searchUser"
+            aria-label="Search GitHub username"
             value={findUser}
             onChange={(e) => setFindUser(e.target.value)}
             placeholder="Search GitHub user..."
-            className="flex-1 rounded-md bg-amber-50 px-4 py-1 text-gray-800 outline-none"
+            className="flex-1 rounded-md bg-amber-50 px-4 py-2 text-gray-800 outline-none"
           />
 
           <button
             disabled={loading}
             type="submit"
-            className="rounded-md bg-[#1f1f28] border border-white px-2 py-1 text-white cursor-pointer"
+            className="w-full rounded-md border border-white bg-[#1f1f28] px-4 py-2 text-white cursor-pointer transition-colors hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
             {loading ? "Searching..." : "Search"}
           </button>
         </form>
+
         {!loading && user.id && (
-          <div className="git-user-profile m-2 p-2">
+          <div className="mt-4">
             {user.avatar_url && (
               <img
                 src={user.avatar_url}
-                alt="avatar image"
-                className="size-30 rounded-md"
+                alt={`${user.login}'s avatar`}
+                loading="lazy"
+                width={120}
+                height={120}
+                className="h-24 w-24 rounded-md object-cover sm:h-30 sm:w-30"
               />
             )}
-            <table className="w-full table-fixed border-separate border-spacing-y-2 text-left">
+
+            <table className="mt-4 w-full table-fixed border-separate border-spacing-y-2 text-left break-words">
               <tbody>
-                <tr id="username">
-                  <td className="w-32 font-medium">User Name</td>
+                <tr>
+                  <td className="w-28 font-medium sm:w-32">User Name</td>
                   <td>{user.login}</td>
                 </tr>
-                <tr id="name">
+
+                <tr>
                   <td className="font-medium">Name</td>
-                  <td>{user.name === null ? <p>N/A</p> : user.name}</td>
+                  <td>{user.name ?? "N/A"}</td>
                 </tr>
 
-                <tr id="company">
+                <tr>
                   <td className="font-medium">Company</td>
-                  <td>{user.company === null ? <p>N/A</p> : user.company}</td>
+                  <td>{user.company ?? "N/A"}</td>
                 </tr>
-                <tr id="followers">
+
+                <tr>
                   <td className="font-medium">Followers</td>
-                  <td>
-                    {user.followers === null ? <p>N/A</p> : user.followers}
-                  </td>
+                  <td>{user.followers ?? "N/A"}</td>
                 </tr>
-                <tr id="bio">
+
+                <tr>
                   <td className="font-medium align-top">Bio</td>
-                  <td>{user.bio === null ? <p>N/A</p> : user.bio}</td>
+                  <td>{user.bio ?? "N/A"}</td>
                 </tr>
               </tbody>
             </table>
+
             {user.html_url && (
               <a
                 href={user.html_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-sm border  px-4 py-1 text-white bg-[#1f1f28] cursor-pointer"
+                aria-label={`Visit ${user.login}'s GitHub profile`}
+                className="mt-4 inline-block rounded-md border border-white bg-[#1f1f28] px-4 py-2 text-white transition-colors hover:bg-gray-700"
               >
                 Visit Profile
               </a>
             )}
           </div>
         )}
-        {error && <p className="text-red-500">{error}</p>}
+
+        {error && <p className="mt-3 text-red-500">{error}</p>}
       </div>
+
+      {recentUser.length > 0 && (
+        <div className="mx-auto mt-4 w-full max-w-2xl rounded-2xl bg-gray-800 p-4">
+          <h2 className="mb-3 text-lg font-semibold text-white">
+            Recent Searches
+          </h2>
+
+          <div className="space-y-2">
+            {recentUser.map((prev) => (
+              <div
+                key={prev}
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  setFindUser(prev);
+                  fetchUser(prev);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    setFindUser(prev);
+                    fetchUser(prev);
+                  }
+                }}
+                className="flex w-fit cursor-pointer items-center gap-2 rounded-md px-2 py-1 text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
+              >
+                <img
+                  src={historyIcon}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  width={16}
+                  height={16}
+                  className="h-4 w-4 brightness-0 invert opacity-80"
+                />
+
+                <span>{prev}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </>
   );
 }
 
 export default Profile;
-
-/**
- * {
-  "login": "suvepatra004",
-  "id": 108013600,
-  "node_id": "U_kgDOBnAoIA",
-  "avatar_url": "https://avatars.githubusercontent.com/u/108013600?v=4",
-  "gravatar_id": "",
-  "url": "https://api.github.com/users/suvepatra004",
-  "html_url": "https://github.com/suvepatra004",
-  "followers_url": "https://api.github.com/users/suvepatra004/followers",
-  "following_url": "https://api.github.com/users/suvepatra004/following{/other_user}",
-  "gists_url": "https://api.github.com/users/suvepatra004/gists{/gist_id}",
-  "starred_url": "https://api.github.com/users/suvepatra004/starred{/owner}{/repo}",
-  "subscriptions_url": "https://api.github.com/users/suvepatra004/subscriptions",
-  "organizations_url": "https://api.github.com/users/suvepatra004/orgs",
-  "repos_url": "https://api.github.com/users/suvepatra004/repos",
-  "events_url": "https://api.github.com/users/suvepatra004/events{/privacy}",
-  "received_events_url": "https://api.github.com/users/suvepatra004/received_events",
-  "type": "User",
-  "user_view_type": "public",
-  "site_admin": false,
-  "name": "Suvendu  Kumar Patra",
-  "company": "Accenture",
-  "blog": "https://github.com/suvepatra004",
-  "location": "Odisha",
-  "email": null,
-  "hireable": null,
-  "bio": "Ex-Accenture | Product Builder | Frontend Developer | Vibe Coder | Solving Problems through my AI Product Building journey.",
-  "twitter_username": null,
-  "public_repos": 25,
-  "public_gists": 0,
-  "followers": 4,
-  "following": 9,
-  "created_at": "2022-06-22T15:17:57Z",
-  "updated_at": "2026-06-04T17:31:48Z"
-}
- */
