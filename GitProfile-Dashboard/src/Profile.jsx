@@ -9,7 +9,8 @@ import React, { useEffect, useState } from "react";
  *
  * @V3
  * [] More Error handling (API authorization, api call limits)
- * [] use of Axios/react-query/react-swr
+ * [] use of Axios/react-query/react-swr instead of Fetch API call
+ * [] Add recent 5 search history (storing in LocalStorage)
  *
  * ADD:
  * [Done] Is username empty check (search bar) (previous fetched user profile is present or not)
@@ -23,7 +24,7 @@ function Profile() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchUser = () => {
+  const fetchUser = async () => {
     const userName = findUser.trim();
     if (!userName) {
       setUser({});
@@ -34,27 +35,27 @@ function Profile() {
     setError("");
     setLoading(true);
 
-    fetch(`https://api.github.com/users/${userName}`)
-      .then(async (res) => {
-        if (res.status === 404) {
-          setError("User Not Found");
-          setUser({});
-          return null;
-        }
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (!data) return;
-        setUser(data);
-      })
-      .catch((e) => {
-        setError(e.message || String(e));
+    try {
+      const res = await fetch(`https://api.github.com/users/${userName}`);
+
+      if (res.status === 404) {
         setUser({});
-      })
-      .finally(() => setLoading(false));
+        setError("User Not Found");
+        return null;
+      }
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      if (!data) return;
+      setUser(data);
+    } catch (e) {
+      setError(e.message || String(e));
+      setUser({});
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = (e) => {
