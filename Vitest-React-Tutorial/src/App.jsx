@@ -23,7 +23,7 @@ function App() {
         >
           Count is {count}
         </button>
-        <Counter/>
+        <Counter />
       </section>
     </>
   )
