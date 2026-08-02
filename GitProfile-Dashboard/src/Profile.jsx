@@ -44,6 +44,7 @@ function Profile() {
     );
   };
 
+
   useEffect(() => {
     const storedHistory = localStorage.getItem("history");
 
@@ -188,6 +189,11 @@ function Profile() {
             )}
           </div>
         )}
+
+        {!loading && !user.id && (
+          <div className="mt-4 text-gray-200">Search a GitHub username to see results.</div>
+        )}
+
 
         {error && <p className="mt-3 text-red-500">{error}</p>}
       </div>
