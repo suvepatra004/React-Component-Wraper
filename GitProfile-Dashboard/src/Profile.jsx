@@ -12,6 +12,8 @@ import historyIcon from "../assets/recently.png";
  * [] More Error handling (API authorization, api call limits)
  * [Done] use of Axios/react-query/react-swr instead of Fetch API call
  * [Done] Add recent 5 search history (storing in LocalStorage)
+ * [In Progress] Run Unit test for Profile.jsx
+ * [In Progress] Highlight the edge cases, and test it
  *
  * ADD:
  * [Done] Is username empty check (search bar) (previous fetched user profile is present or not)
@@ -147,7 +149,7 @@ function Profile() {
               />
             )}
 
-            <table className="mt-4 w-full table-fixed border-separate border-spacing-y-2 text-left break-words">
+            <table className="mt-4 w-full table-fixed border-separate border-spacing-y-2 text-left wrap-break-words">
               <tbody>
                 <tr>
                   <td className="w-28 font-medium sm:w-32">User Name</td>
