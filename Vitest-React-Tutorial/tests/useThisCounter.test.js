@@ -5,7 +5,7 @@ import { useCounter } from "../hooks/useCounter";
 
 describe("useCounter", () => {
     it("Initial value of useCouter", () => {
-        
+        expect(useCounter()).toBe(0);
     })
     it("Increment of counter")
     it("Decrement of counter")
