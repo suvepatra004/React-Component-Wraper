@@ -133,7 +133,6 @@ describe("Profile component", () => {
         expect(window.localStorage.getItem("history")).toBeNull();
     });
 
-
     it("success fetch: shows profile + adds to recent + localStorage", async () => {
         const userObj = {
             id: 1,
@@ -417,5 +416,5 @@ describe("Profile component", () => {
         expect(utils.getByText("Followers").nextSibling?.textContent ?? "").toBe("N/A");
     });
 
-
 });
+
