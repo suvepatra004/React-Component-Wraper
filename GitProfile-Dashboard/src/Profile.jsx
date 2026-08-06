@@ -1,25 +1,6 @@
 import React, { useEffect, useState } from "react";
 import historyIcon from "../assets/recently.png";
 
-/**
- *
- * TODO:
- * @V2
- * [Done] User Not Found error fix (error displaying after correct user fetch)
- * [Done] Search bar visible Only, when typing the username.
- *
- * @V3
- * [] More Error handling (API authorization, api call limits)
- * [Done] use of Axios/react-query/react-swr instead of Fetch API call
- * [Done] Add recent 5 search history (storing in LocalStorage)
- * [In Progress] Run Unit test for Profile.jsx
- * [In Progress] Highlight the edge cases, and test it
- *
- * ADD:
- * [Done] Is username empty check (search bar) (previous fetched user profile is present or not)
- * [Done] Is user found after fetch request (No, Hide profile then Show "User not found")
- * [Done] Is user found after fetch request (Yes, Clear previous error + user profile then Show user Profile)
- */
 
 function Profile() {
   const [user, setUser] = useState({});
