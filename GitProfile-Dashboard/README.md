@@ -147,10 +147,10 @@ Enhanced search experience, async refactor, and test coverage.
 **Planned:**
 
 - [ ] Enhanced error handling for API authorization failures and rate-limit responses
-- [ ] Refactor `Profile` into modular, reusable sub-components
-- [ ] Paginated suggestion results after username search
-- [ ] Display up to 6 similar username suggestions with responsive layout
-- [ ] Improved mobile responsiveness and small-screen UX
+- [ done ] Refactor `Profile` into modular, reusable sub-components
+- [ ] Paginated results after username search
+- [ ] Display up to 6 similar username suggestions with responsive layout (filtering or includes)
+- [ done ] Improved mobile responsiveness and small-screen UX
 - [ ] Suggestion profiles rendered as an interactive grid card layout post-search
 - [ ] Dedicated expanded profile view navigable from the suggestion grid
 - [ ] Expanded profile page: avatar, username, display name, bio, optional company, GitHub-style contribution activity graph, aggregate stats (commits, PRs, issues), social links with icons, last contribution date, and active/inactive status

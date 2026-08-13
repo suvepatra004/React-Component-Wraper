@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Dashboard from "../components/Dashboard";
 import RecentUser from "../components/RecentUser";
+import UserCard from "../components/UserCard";
 
 function Profile() {
   const [user, setUser] = useState({});
@@ -8,6 +9,12 @@ function Profile() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [recentVersion, setRecentVersion] = useState(0);
+  const [query, setQuery] = useState([]);
+  const [selectedUser, setSelectedUser] = useState("");
+
+  const onSelect = (user) => {
+    setSelectedUser(user);
+  };
 
   const addRecentUser = (username) => {
     const gitUser = username.trim();
@@ -49,7 +56,10 @@ function Profile() {
     setLoading(true);
 
     try {
-      const res = await fetch(`https://api.github.com/users/${userName}`);
+      const res = await fetch(
+        // `https://api.github.com/search/users?q=${userName}h&per_page=6&page=1`,
+        `https://api.github.com/users/${userName}`,
+      );
 
       if (res.status === 404) {
         setUser({});
@@ -109,8 +119,9 @@ function Profile() {
             {loading ? "Searching..." : "Search"}
           </button>
         </form>
+        <UserCard user={user} />
 
-        {!loading && user.id && <Dashboard user={user} />}
+        {!loading && user.id && <Dashboard user={selectedUser} />}
 
         {!loading && !user.id && (
           <div className="mt-4 text-yellow-200">
