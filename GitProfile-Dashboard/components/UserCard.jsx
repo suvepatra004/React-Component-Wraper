@@ -1,18 +1,30 @@
 import React from "react";
 
-const UserCard = ({ user }) => {
+const UserCard = ({ user, onSelect }) => {
   return (
-    <button className="cursor-pointer mt-4 bg-amber-50 rounded-md">
-      <div className="flex flex-row gap-1.5 p-2">
+    <button
+      type="button"
+      onClick={() => onSelect(user)}
+      className="cursor-pointer mt-4 bg-amber-50 rounded-md flex flex-row"
+    >
+      <div className="p-2">
         <img
           src={user.avatar_url}
           alt={`${user.login} avatar`}
-          className="size-10 object-cover rounded-sm"
+          className="size-12 object-cover rounded-sm"
           loading="lazy"
+          draggable={false}
         />
-        <h2 id="user-card-name" className="text-zinc-900 text-xl font-semibold">
-          {user.login}
-        </h2>
+      </div>
+
+      <div className="min-w-0 px-4 flex flex-col justify-center">
+        <h2 className="text-zinc-900 text-xl font-semibold">{user.login}</h2>
+
+        {user.name ? (
+          <div className="text-xs text-black truncate">{user.name}</div>
+        ) : (
+          <div className="text-xs text-black truncate">Profile</div>
+        )}
       </div>
     </button>
   );

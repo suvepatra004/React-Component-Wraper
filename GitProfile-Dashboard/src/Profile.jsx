@@ -9,8 +9,8 @@ function Profile() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [recentVersion, setRecentVersion] = useState(0);
-  const [query, setQuery] = useState([]);
-  const [selectedUser, setSelectedUser] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [results, setResults] = useState([]);
 
   const onSelect = (user) => {
     setSelectedUser(user);
@@ -57,11 +57,11 @@ function Profile() {
 
     try {
       const res = await fetch(
-        // `https://api.github.com/search/users?q=${userName}h&per_page=6&page=1`,
-        `https://api.github.com/users/${userName}`,
+        `https://api.github.com/search/users?q=${userName}&per_page=6&page=1`,
+        // `https://api.github.com/users/${userName}`,
       );
 
-      if (res.status === 404) {
+      if (res.total_count === 0) {
         setUser({});
         setError("User Not Found");
         return null;
@@ -73,7 +73,7 @@ function Profile() {
       const data = await res.json();
       if (!data) return;
 
-      setUser(data);
+      setResults(data.items || []);
       addRecentUser(userName);
       setRecentVersion((v) => v + 1);
     } catch (e) {
@@ -119,16 +119,23 @@ function Profile() {
             {loading ? "Searching..." : "Search"}
           </button>
         </form>
-        <UserCard user={user} />
 
-        {!loading && user.id && <Dashboard user={selectedUser} />}
+        {/* UserCard profiles */}
+        {results.map((u) => (
+          <UserCard key={u.id} user={u} onSelect={setSelectedUser} />
+        ))}
 
-        {!loading && !user.id && (
+        {/* Dashboard view */}
+        {selectedUser && <Dashboard user={selectedUser} />}
+
+        {/* Idle State message */}
+        {!loading && (!results || results.length === 0) && (
           <div className="mt-4 text-yellow-200">
             Search a GitHub username to see results.
           </div>
         )}
 
+        {/* Error message display */}
         {error && <p className="mt-3 text-red-500">{error}</p>}
       </div>
 
