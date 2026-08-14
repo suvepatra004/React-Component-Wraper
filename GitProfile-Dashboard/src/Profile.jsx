@@ -11,6 +11,39 @@ function Profile() {
   const [recentVersion, setRecentVersion] = useState(0);
   const [selectedUser, setSelectedUser] = useState(null);
   const [results, setResults] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const loadMore = async () => {
+    const query = findUser.trim();
+    if (!query) return;
+    if (loadingMore || !hasMore) return;
+
+    setLoadingMore(true);
+    try {
+      const res = await fetch(
+        `https://api.github.com/search/users?q=${encodeURIComponent(query)}&per_page=10&page=${page + 1}`,
+      );
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const data = await res.json();
+
+      const newItems = Array.isArray(data.items) ? data.items : [];
+      setResults((prev) => [...prev, ...newItems]);
+
+      // GitHub search gives total_count (string/number). Use it to decide more pages.
+      const totalCount = Number(data.total_count ?? 0);
+      const nextCount = (page + 1) * 10;
+
+      setHasMore(nextCount < totalCount);
+      setPage((p) => p + 1);
+    } catch (e) {
+      setHasMore(false);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
 
   const onSelect = (user) => {
     setSelectedUser(user);
@@ -96,7 +129,7 @@ function Profile() {
 
   return (
     <>
-      <div className="mx-auto w-full max-w-2xl rounded-2xl bg-gray-800 p-4">
+      <div className="mx-auto w-full max-w-2xl rounded-2xl bg-cyan-950 p-4">
         <form
           className="flex w-full flex-col gap-2 sm:flex-row"
           onSubmit={handleSubmit}
@@ -120,11 +153,6 @@ function Profile() {
           </button>
         </form>
 
-        {/* UserCard profiles */}
-        {results.map((u) => (
-          <UserCard key={u.id} user={u} onSelect={setSelectedUser} />
-        ))}
-
         {/* Dashboard view */}
         {selectedUser && <Dashboard user={selectedUser} />}
 
@@ -138,6 +166,36 @@ function Profile() {
         {/* Error message display */}
         {error && <p className="mt-3 text-red-500">{error}</p>}
       </div>
+
+      {/* UserCard profiles */}
+      {results?.length > 0 && (
+        <div className="mx-auto mt-4 w-full max-w-2xl rounded-2xl bg-cyan-950 p-4">
+          <h2 className="mb-3 text-lg font-semibold text-white">
+            Search Results
+          </h2>
+          {/* row-wise bento */}
+          <div className="flex flex-wrap justify-start gap-2">
+            {results.map((u) => (
+              <UserCard
+                key={u.id}
+                user={u}
+                onSelect={(selected) => setSelectedUser(selected)}
+              />
+            ))}
+          </div>
+          {/* load more below */}
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={loadMore}
+              disabled={loadingMore}
+              className="rounded-md border shadow-2xl bg-yellow-200 px-4 py-2 text-slate-800 font-bold transition-colors hover:bg-yellow-100 disabled:opacity-50 cursor-pointer"
+            >
+              {loadingMore ? "Loading..." : "Load more"}
+            </button>
+          </div>
+        </div>
+      )}
 
       <RecentUser
         onSelectUsername={handleRecentSelect}

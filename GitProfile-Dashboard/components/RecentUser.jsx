@@ -35,7 +35,7 @@ const RecentUser = ({ onSelectUsername, recentVersion }) => {
   return (
     <div className="w-full">
       {recentUser.length > 0 && (
-        <div className="mx-auto mt-4 w-full max-w-2xl rounded-2xl bg-gray-800 p-4">
+        <div className="mx-auto mt-4 w-full max-w-2xl rounded-2xl bg-cyan-950 p-4">
           <h2 className="mb-3 text-lg font-semibold text-white">
             Recent Searches
           </h2>

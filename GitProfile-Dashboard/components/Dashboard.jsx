@@ -36,7 +36,7 @@ const Dashboard = ({ user }) => {
 
   return (
     <div>
-      <div className="mt-4">
+      <div className="mt-4 w-full">
         {loading ? (
           <div className="text-red-400">Loading...</div>
         ) : (
@@ -87,7 +87,7 @@ const Dashboard = ({ user }) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Visit ${p.login}'s GitHub profile`}
-                className="mt-4 inline-block rounded-md border border-white bg-[#1f1f28] px-4 py-2 text-white transition-colors hover:bg-gray-700"
+                className="mt-4 inline-block rounded-md border shadow-2xl bg-yellow-200 px-4 py-2 text-slate-800 font-bold transition-colors hover:bg-yellow-100 disabled:opacity-50 cursor-pointer"
               >
                 Visit Profile
               </a>
