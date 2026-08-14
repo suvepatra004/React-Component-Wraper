@@ -148,12 +148,16 @@ Enhanced search experience, async refactor, and test coverage.
 
 - [ ] Enhanced error handling for API authorization failures and rate-limit responses
 - [ done ] Refactor `Profile` into modular, reusable sub-components
-- [ ] Paginated results after username search
-- [ ] Display up to 6 similar username suggestions with responsive layout (filtering or includes)
+- [ done ] Paginated results after username search
+- [ done ] Display up to 6 similar username suggestions with responsive layout (filtering or includes)
 - [ done ] Improved mobile responsiveness and small-screen UX
-- [ ] Suggestion profiles rendered as an interactive grid card layout post-search
-- [ ] Dedicated expanded profile view navigable from the suggestion grid
+- [ done ] Suggestion profiles rendered as an interactive grid card layout post-search
+- [ done ] Dedicated expanded profile view navigable from the suggestion grid
 - [ ] Expanded profile page: avatar, username, display name, bio, optional company, GitHub-style contribution activity graph, aggregate stats (commits, PRs, issues), social links with icons, last contribution date, and active/inactive status
+- [ ] In UserCard component add text "since ${created_at}" instead of Profile
+- [ ] Alt text when Hover (each components)
+- [ ] Add "scroll-to-view" to UserCard components
+- [ ] username -> Search -> click one 'UserCard -> show Profile -> Search other username -> Profile is still there (Should be hidden when other search event happens)
 
 ---
 

@@ -5,7 +5,7 @@ const UserCard = ({ user, onSelect }) => {
     <button
       type="button"
       onClick={() => onSelect?.(user)}
-      className="cursor-pointer mt-4 bg-amber-50/80 border-white rounded-md flex flex-row"
+      className="cursor-pointer mt-4 bg-amber-50/80 border-white hover:bg-white/70 rounded-md flex flex-row"
     >
       <div className="p-2">
         <img

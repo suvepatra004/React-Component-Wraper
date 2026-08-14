@@ -147,7 +147,7 @@ function Profile() {
           <button
             disabled={loading}
             type="submit"
-            className="w-full rounded-md border border-white bg-[#1f1f28] px-4 py-2 text-white cursor-pointer transition-colors hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+            className="w-full rounded-md border shadow-2xl border-yellow-100 bg-yellow-200 px-4 py-2 text-slate-800 font-bold cursor-pointer transition-colors hover:bg-yellow-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
             {loading ? "Searching..." : "Search"}
           </button>
@@ -170,7 +170,7 @@ function Profile() {
       {/* UserCard profiles */}
       {results?.length > 0 && (
         <div className="mx-auto mt-4 w-full max-w-2xl rounded-2xl bg-cyan-950 p-4">
-          <h2 className="mb-3 text-lg font-semibold text-white">
+          <h2 className="mb-3 text-lg font-semibold text-white truncate">
             Search Results
           </h2>
           {/* row-wise bento */}

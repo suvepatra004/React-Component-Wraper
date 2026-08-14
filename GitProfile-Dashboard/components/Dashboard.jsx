@@ -48,7 +48,7 @@ const Dashboard = ({ user }) => {
                 loading="lazy"
                 width={120}
                 height={120}
-                className="h-24 w-24 rounded-md object-cover sm:h-30 sm:w-30"
+                className="size-32 rounded-md object-cover sm:h-30 sm:w-30"
               />
             )}
 

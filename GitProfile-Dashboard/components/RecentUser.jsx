@@ -40,7 +40,7 @@ const RecentUser = ({ onSelectUsername, recentVersion }) => {
             Recent Searches
           </h2>
 
-          <div className="space-y-2">
+          <div className="flex flex-wrap justify-start gap-2">
             {recentUser.map((prev) => (
               <div
                 key={prev}
@@ -52,7 +52,7 @@ const RecentUser = ({ onSelectUsername, recentVersion }) => {
                     onSelectUsername?.(prev);
                   }
                 }}
-                className="flex w-fit cursor-pointer items-center gap-2 rounded-md px-2 py-1 text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
+                className="flex w-fit cursor-pointer items-center gap-2 rounded-sm px-2 py-1 text-gray-300 transition-colors hover:bg-cyan-700 hover:text-white"
               >
                 <img
                   src={historyIcon}
