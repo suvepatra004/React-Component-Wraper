@@ -5,6 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: "/GitProfile-Dashboard/", // <-- change if your repo name is different
   plugins: [
     react(),
     babel({ presets: [reactCompilerPreset()] }),

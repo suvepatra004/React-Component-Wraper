@@ -158,6 +158,7 @@ Enhanced search experience, async refactor, and test coverage.
 - [ ] Alt text when Hover (each components)
 - [ ] Add "scroll-to-view" to UserCard components
 - [ ] username -> Search -> click one 'UserCard -> show Profile -> Search other username -> Profile is still there (Should be hidden when other search event happens)
+- [ ] Host the page in GitHub
 
 ---
 
