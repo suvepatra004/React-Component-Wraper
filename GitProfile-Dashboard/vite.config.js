@@ -3,9 +3,8 @@ import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
 import tailwindcss from "@tailwindcss/vite";
 
-// https://vite.dev/config/
 export default defineConfig({
-  base: "/GitProfile-Dashboard/", // <-- change if your repo name is different
+  base: "/React-Components/GitProfile-Dashboard/",
   plugins: [
     react(),
     babel({ presets: [reactCompilerPreset()] }),
