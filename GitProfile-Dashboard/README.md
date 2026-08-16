@@ -1,15 +1,18 @@
 # GitHub Developer Profile Dashboard
 
-A React application that fetches and displays public GitHub user profiles using the GitHub REST API. Search by username, view profile details, and revisit recent searches — all with loading states, error handling, and unit test coverage.
+A React application that searches and displays public GitHub user profiles using the GitHub REST API. Search by username, browse matching users in a card grid, open an expanded profile view, paginate through results, and revisit recent searches — with loading states, error handling, and unit test coverage.
+
+**Live demo:** [https://gitprofile-two.vercel.app/](https://gitprofile-two.vercel.app/)
 
 ## 🛠️ Tech Stack
 
 - React 19
 - JavaScript (ES6+)
 - Vite
-- Tailwind CSS
+- Tailwind CSS v4
 - GitHub REST API
 - Vitest + React Testing Library (unit tests)
+- Deployed on [Vercel](https://gitprofile-two.vercel.app/)
 
 ### Project Structure
 
@@ -17,14 +20,18 @@ A React application that fetches and displays public GitHub user profiles using 
 GitProfile-Dashboard/
 ├── assets/
 │   └── recently.png
+├── components/
+│   ├── Dashboard.jsx      # Expanded profile view
+│   ├── RecentUser.jsx     # Recent search history panel
+│   └── UserCard.jsx       # Search result card
 ├── public/
-│   ├── favicon.svg
+│   ├── favicon.svg        # GitHub-inspired app icon
 │   └── icons.svg
 ├── src/
 │   ├── tests/
 │   │   └── Profile.test.jsx
 │   ├── App.jsx
-│   ├── Profile.jsx
+│   ├── Profile.jsx        # Search, results, and state orchestration
 │   ├── main.jsx
 │   └── index.css
 ├── setupTests.js
@@ -37,26 +44,28 @@ GitProfile-Dashboard/
 
 ### How It Works
 
-1. User enters a GitHub username in the search bar.
+1. User enters a GitHub username (or partial match) in the search bar.
 2. The application validates the input (empty username shows a "Set username" error).
-3. A request is sent to the GitHub REST API using `async/await`.
-4. Based on the response:
-   - Displays the user's profile (avatar, username, name, company, followers, bio).
-   - Shows an appropriate error message (user not found, HTTP error, network error).
-5. Successful searches are saved to **recent search history** (up to 5 usernames in `localStorage`, expires after 5 minutes).
-6. Clicking a recent search re-fetches that user's profile.
-7. The **Visit Profile** button opens the user's GitHub profile in a new tab.
+3. A request is sent to the GitHub Search Users API using `async/await`.
+4. Up to 6 matching users are shown as interactive **UserCard** components in a responsive grid.
+5. Clicking a **UserCard** opens the **Dashboard** expanded profile view (avatar, username, name, company, followers, bio, and Visit Profile link).
+6. **Load more** fetches additional pages of search results (10 users per page).
+7. Successful searches are saved to **recent search history** (up to 5 usernames in `localStorage`, expires after 5 minutes).
+8. Clicking a recent search re-runs that query.
+9. The **Visit Profile** button opens the user's GitHub profile in a new tab.
 
-### API Endpoint
+### API Endpoints
 
 ```http
+GET https://api.github.com/search/users?q={query}&per_page=6&page=1
+GET https://api.github.com/search/users?q={query}&per_page=10&page={n}
 GET https://api.github.com/users/{username}
 ```
 
-Example:
+Example search:
 
 ```text
-https://api.github.com/users/suvepatra004
+https://api.github.com/search/users?q=suvepatra004&per_page=6&page=1
 ```
 
 ---
@@ -99,16 +108,24 @@ npm test
 npm run build
 ```
 
+#### Preview production build locally
+
+```bash
+npm run preview
+```
+
 ---
 
 ### 📸 Application States
 
 - **Initial / Idle** — Search bar with a prompt to search a GitHub username
 - **Loading** — Search button shows "Searching..." while the API request is in progress
-- **Profile Loaded** — Avatar, profile table, and Visit Profile link
-- **User Not Found** — 404 response with an error message; profile is hidden
+- **Search Results** — Grid of UserCard components for matching GitHub users
+- **Profile Selected** — Dashboard expanded view with full profile details
+- **Load More** — Paginated fetch of additional search results
+- **User Not Found** — No matching users; error message displayed
 - **Validation Error** — Empty username submission shows "Set username"
-- **Network / HTTP Error** — Non-404 failures display the error message
+- **Network / HTTP Error** — Non-success responses display the error message
 - **Recent Searches** — Up to 5 previously searched usernames, clickable to re-search
 
 ---
@@ -130,7 +147,7 @@ The core search and profile display functionality.
 
 ### Version 3 — Completed
 
-Enhanced search experience, async refactor, and test coverage.
+Enhanced search experience, component modularization, and test coverage.
 
 **Completed:**
 
@@ -143,22 +160,23 @@ Enhanced search experience, async refactor, and test coverage.
 - ✅ `N/A` fallback for missing optional profile fields
 - ✅ Vitest + React Testing Library setup
 - ✅ Unit tests for Profile component (validation, fetch success/404/errors, localStorage, recent searches, keyboard interaction)
+- ✅ Refactor `Profile` into modular sub-components (`Dashboard`, `UserCard`, `RecentUser`)
+- ✅ Paginated search results with Load more
+- ✅ Up to 6 initial username suggestions in a responsive card grid
+- ✅ Improved mobile responsiveness and small-screen UX
+- ✅ Interactive UserCard grid after search
+- ✅ Expanded profile view via Dashboard when a card is selected
+- ✅ Live deployment on Vercel
 
 **Planned:**
 
 - [ ] Enhanced error handling for API authorization failures and rate-limit responses
-- [ done ] Refactor `Profile` into modular, reusable sub-components
-- [ done ] Paginated results after username search
-- [ done ] Display up to 6 similar username suggestions with responsive layout (filtering or includes)
-- [ done ] Improved mobile responsiveness and small-screen UX
-- [ done ] Suggestion profiles rendered as an interactive grid card layout post-search
-- [ done ] Dedicated expanded profile view navigable from the suggestion grid
 - [ ] Expanded profile page: avatar, username, display name, bio, optional company, GitHub-style contribution activity graph, aggregate stats (commits, PRs, issues), social links with icons, last contribution date, and active/inactive status
-- [ ] In UserCard component add text "since ${created_at}" instead of Profile
-- [ ] Alt text when Hover (each components)
-- [ ] Add "scroll-to-view" to UserCard components
-- [ ] username -> Search -> click one 'UserCard -> show Profile -> Search other username -> Profile is still there (Should be hidden when other search event happens)
-- [ ] Host the page in GitHub
+- [ ] In UserCard component, show "since ${created_at}" instead of generic Profile text
+- [ ] Alt text on hover for each component
+- [ ] Scroll-to-view behavior for UserCard components
+- [ ] Clear selected profile when a new search is submitted (profile should hide on subsequent searches)
+- [ ] Host the page on GitHub Pages (currently deployed on Vercel)
 
 ---
 
@@ -167,15 +185,18 @@ Enhanced search experience, async refactor, and test coverage.
 This project was built to practice:
 
 - React Components & JSX
+- Component composition and modular architecture
 - `useState` and `useEffect`
 - Event Handling & Controlled Components
 - Conditional Rendering
 - Fetch API with `async/await`
+- GitHub Search Users API and pagination
 - HTTP Status Handling & Error Handling
 - UI State Management
 - `localStorage` for client-side persistence
 - Unit Testing with Vitest & React Testing Library
 - Mocking `fetch` and `localStorage` in tests
+- Production deployment with Vercel
 
 ### Features
 
@@ -209,6 +230,12 @@ This project was built to practice:
 - Idle state prompt when no profile is loaded
 - `async/await`-based API calls
 - Comprehensive unit test suite for the Profile component
+- Modular components: `Profile`, `Dashboard`, `UserCard`, `RecentUser`
+- GitHub Search Users API with paginated results
+- UserCard grid for browsing matching profiles
+- Dashboard expanded profile view on card selection
+- Load more pagination for search results
+- Live demo at [gitprofile-two.vercel.app](https://gitprofile-two.vercel.app/)
 
 ---
 
