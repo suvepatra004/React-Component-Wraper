@@ -39,7 +39,7 @@ function Profile() {
       setHasMore(nextCount < totalCount);
       setPage((p) => p + 1);
     } catch (e) {
-      setHasMore(false);
+      setError(e.message || "Unable to load more users.");
     } finally {
       setLoadingMore(false);
     }
@@ -90,28 +90,42 @@ function Profile() {
 
     try {
       const res = await fetch(
-        `https://api.github.com/search/users?q=${userName}&per_page=6&page=1`,
+        `https://api.github.com/search/users?q=${encodeURIComponent(userName)}&per_page=10&page=1`,
         // `https://api.github.com/users/${userName}`,
       );
 
-      if (res.total_count === 0) {
-        setUser({});
-        setError("User Not Found");
-        return null;
-      }
       if (!res.ok) {
+        if (res.status === 403 || res.status === 429) {
+          throw new Error(
+            "GitHub API rate limit exceeded. Please try again later.",
+          );
+        }
         throw new Error(`HTTP ${res.status}`);
       }
 
       const data = await res.json();
-      if (!data) return;
+      const items = Array.isArray(data?.items) ? data.items : [];
 
-      setResults(data.items || []);
+      if (items.length === 0) {
+        setUser({});
+        setResults([]);
+        setHasMore(false);
+        setPage(1);
+        setError("User Not Found");
+        return;
+      }
+
+      setResults(items);
+      setPage(1);
+      setHasMore(10 < Number(data.total_count ?? 0));
       addRecentUser(userName);
       setRecentVersion((v) => v + 1);
     } catch (e) {
-      setError(e.message || String(e));
+      setError(e.message || "Unable to search GitHub users.");
       setUser({});
+      setResults([]);
+      setHasMore(false);
+      setPage(1);
     } finally {
       setLoading(false);
     }
