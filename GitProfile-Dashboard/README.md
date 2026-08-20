@@ -159,23 +159,41 @@ Enhanced search experience, component modularization, and test coverage.
 - ✅ Duplicate elimination in search history
 - ✅ `N/A` fallback for missing optional profile fields
 - ✅ Vitest + React Testing Library setup
-- ✅ Unit tests for Profile component (validation, fetch success/404/errors, localStorage, recent searches, keyboard interaction)
+- ✅ Unit tests for Profile component (validation, fetch success/404/errors, localStorage, recent searches, keyboard interaction, edge cases)
 - ✅ Refactor `Profile` into modular sub-components (`Dashboard`, `UserCard`, `RecentUser`)
-- ✅ Paginated search results with Load more
-- ✅ Up to 6 initial username suggestions in a responsive card grid
+- ✅ Paginated search results with Load more button
+- ✅ Up to 10 results per page with full pagination support
+- ✅ Initial search displays up to 10 matching users
 - ✅ Improved mobile responsiveness and small-screen UX
 - ✅ Interactive UserCard grid after search
 - ✅ Expanded profile view via Dashboard when a card is selected
+- ✅ Error handling for API rate limits (403, 429 status codes)
+- ✅ Comprehensive edge case testing
 - ✅ Live deployment on Vercel
+
+### Version 4 — Planned
+
+Advanced features, enhanced profile display, and optimization.
 
 **Planned:**
 
-- [ ] Enhanced error handling for API authorization failures and rate-limit responses
-- [ ] Expanded profile page: avatar, username, display name, bio, optional company, GitHub-style contribution activity graph, aggregate stats (commits, PRs, issues), social links with icons, last contribution date, and active/inactive status
-- [ ] In UserCard component, show "since ${created_at}" instead of generic Profile text
-- [ ] Alt text on hover for each component
+- [ ] Migrate from Fetch API to Axios/react-query/react-swr for improved state management
+- [ ] Enhanced error handling for API authorization failures and timeout handling
+- [ ] Expanded profile page with:
+  - GitHub-style contribution activity graph
+  - Aggregate stats (total commits, PRs, issues)
+  - Social links with icons (Twitter, LinkedIn, etc.)
+  - Last contribution date indicator
+  - Active/Inactive status badge
+  - Repository showcase grid
+- [ ] Display "since ${created_at}" instead of generic "Profile" text in UserCard
+- [ ] Implement GitHub GraphQL API for richer data queries
+- [ ] Alt text on hover for accessibility
 - [ ] Scroll-to-view behavior for UserCard components
-- [ ] Clear selected profile when a new search is submitted (profile should hide on subsequent searches)
+- [ ] Clear selected profile when a new search is submitted
+- [ ] Add favorites/bookmarks feature with persistence
+- [ ] Dark/Light theme toggle
+- [ ] Performance optimization with React.memo and useMemo
 - [ ] Host the page on GitHub Pages (currently deployed on Vercel)
 
 ---
@@ -229,12 +247,13 @@ This project was built to practice:
 - Keyboard-accessible recent search items
 - Idle state prompt when no profile is loaded
 - `async/await`-based API calls
-- Comprehensive unit test suite for the Profile component
+- Comprehensive unit test suite for the Profile component with edge case coverage
 - Modular components: `Profile`, `Dashboard`, `UserCard`, `RecentUser`
-- GitHub Search Users API with paginated results
+- GitHub Search Users API with paginated results (10 results per page)
 - UserCard grid for browsing matching profiles
 - Dashboard expanded profile view on card selection
 - Load more pagination for search results
+- Rate limit error handling (403, 429 status codes)
 - Live demo at [gitprofile-two.vercel.app](https://gitprofile-two.vercel.app/)
 
 ---
