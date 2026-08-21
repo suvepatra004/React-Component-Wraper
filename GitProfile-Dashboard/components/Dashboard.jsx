@@ -32,7 +32,7 @@ const Dashboard = ({ user }) => {
     };
   }, [user?.login]);
 
-  const p = profile; // alias to keep your JSX unchanged
+  const p = profile; // alias to keep the JSX unchanged
 
   return (
     <div>
@@ -72,6 +72,11 @@ const Dashboard = ({ user }) => {
                 <tr>
                   <td className="font-medium">Followers</td>
                   <td>{p.followers ?? "N/A"}</td>
+                </tr>
+
+                <tr>
+                  <td className="font-medium">Repository</td>
+                  <td>{p.public_repos ?? "N/A"}</td>
                 </tr>
 
                 <tr>
